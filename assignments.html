@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Assignments</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background: radial-gradient(circle at top left, #0f2027, #203a43, #2c5364);
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            padding: 30px;
+        }
+
+        .box {
+            max-width: 500px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 0 40px rgba(0, 255, 255, .3);
+        }
+
+        h2 {
+            color: #00f5ff;
+            text-align: center;
+        }
+
+        input,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+        }
+
+        button {
+            background: #00f5ff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .assignment {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .assignment small {
+            color: #00f5ff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+        <h2>📘 Assignments</h2>
+
+        <input id="title" placeholder="Assignment title">
+        <input id="subject" placeholder="Subject">
+        <input id="deadline" type="date">
+
+        <button onclick="addAssignment()">Add Assignment</button>
+
+        <div id="list"></div>
+
+        <button onclick="goBack()">⬅ Back</button>
+    </div>
+
+    <script>
+        if (!sessionStorage.getItem("loggedIn")) {
+            window.location.href = "login.html";
+        }
+    </script>
+    <script>
+
+        let assignments = JSON.parse(localStorage.getItem("assignments")) || [];
+
+        function addAssignment() {
+
+            const titleInput = document.getElementById("title");
+            const subjectInput = document.getElementById("subject");
+            const deadlineInput = document.getElementById("deadline");
+
+            const title = titleInput.value.trim();
+            const subject = subjectInput.value.trim();
+            const deadline = deadlineInput.value;
+
+            if (!title || !subject || !deadline) {
+                alert("Please fill all fields");
+                return;
+            }
+
+            assignments.push({
+                title,
+                subject,
+                deadline,
+                notified: false
+            });
+
+            localStorage.setItem("assignments", JSON.stringify(assignments));
+
+            titleInput.value = "";
+            subjectInput.value = "";
+            deadlineInput.value = "";
+
+            showAssignments();
+        }
+
+        function showAssignments() {
+            const list = document.getElementById("list");
+            list.innerHTML = "";
+
+            assignments.forEach(a => {
+                list.innerHTML += `
+            <div class="assignment">
+                <b>${a.title}</b><br>
+                ${a.subject}<br>
+                <small>Deadline: ${a.deadline}</small>
+            </div>
+        `;
+            });
+        }
+
+        function goBack() {
+            window.location.href = "dashboard.html";
+        }
+
+        showAssignments();
+
+    </script>
+
+
+</body>
+
+</html>

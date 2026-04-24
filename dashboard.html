@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Classroom Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at top left, #0f2027, #203a43, #2c5364);
+            padding: 30px;
+            color: #fff;
+        }
+
+        /* Main Container */
+        .dashboard {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 30px 20px;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar h2 {
+            margin-bottom: 40px;
+            color: #00f5ff;
+            text-shadow: 0 0 10px #00f5ff;
+        }
+
+        .profile {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .profile img {
+            width: 70px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border: 2px solid #00f5ff;
+            box-shadow: 0 0 15px #00f5ff;
+        }
+
+        .menu li {
+            list-style: none;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .menu li.active {
+            background: #00f5ff;
+            color: #000;
+            box-shadow: 0 0 20px #00f5ff;
+        }
+
+        /* Smooth page fade animation */
+        .content {
+            flex: 1;
+            padding: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu li:hover {
+            background: #00f5ff;
+            color: #000;
+            box-shadow: 0 0 15px #00f5ff;
+        }
+
+
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            background: #00f5ff;
+            color: #000;
+            cursor: pointer;
+            transition: 0.4s;
+            box-shadow: 0 0 15px #00f5ff;
+        }
+
+        .header button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px #00f5ff;
+        }
+
+        #welcomeText {
+            animation: slideGlow 2s infinite alternate;
+        }
+
+        @keyframes slideGlow {
+            from {
+                text-shadow: 0 0 5px #00f5ff;
+            }
+
+            to {
+                text-shadow: 0 0 20px #00f5ff;
+            }
+        }
+
+        #liveDateTime {
+            font-size: 14px;
+            margin-top: 5px;
+            color: #00f5ff;
+        }
+
+        /* Cards */
+        .cards {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            flex: 1;
+            padding: 20px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            transition: 0.4s;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 30px #00f5ff;
+        }
+
+        /* Lower Section */
+        .lower {
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Tasks */
+        .tasks {
+            flex: 2;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .task {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            transition: 0.3s;
+        }
+
+        .task:hover {
+            background: #00f5ff;
+            color: #000;
+        }
+
+        .tasks table {
+            width: 200%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        .tasks th,
+        .tasks td {
+            border: 1px solid white;
+            /* Lines for rows & columns */
+            padding: 12px;
+            text-align: center;
+        }
+
+        .tasks th {
+            background: #00f5ff;
+            color: black;
+        }
+
+        .tasks tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+            /* soft alternate rows */
+        }
+
+        /* Stats */
+        .stats {
+            flex: 1;
+            display: grid;
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            transition: 0.3s;
+        }
+
+        .stat-box:hover {
+            box-shadow: 0 0 25px #00f5ff;
+        }
+
+        /* Calendar */
+        .calendar {
+            width: 260px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .event {
+            margin: 15px 0;
+            font-size: 14px;
+            padding: 10px;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .event:hover {
+            background: #00f5ff;
+            color: #000;
+        }
+
+        /* Progress Bars */
+        .progress {
+            background: rgba(255, 255, 255, 0.1);
+            height: 8px;
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #00f5ff;
+            border-radius: 10px;
+            animation: loadBar 2s ease forwards;
+        }
+
+        @keyframes loadBar {
+            from {
+                width: 0;
+            }
+        }
+
+        /* Circular Progress Ring */
+        .circle-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .circle {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .mask,
+        .fill {
+            width: 120px;
+            height: 120px;
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .mask {
+            clip: rect(0px, 120px, 120px, 60px);
+        }
+
+        .mask .fill {
+            clip: rect(0px, 60px, 120px, 0px);
+            background: #00f5ff;
+            box-shadow: 0 0 15px #00f5ff;
+        }
+
+        .mask.full,
+        .circle .fill {
+            animation: fillAnimation 2s ease-in-out forwards;
+            transform: rotate(171deg);
+            /* 95% of 180deg */
+        }
+
+        @keyframes fillAnimation {
+            from {
+                transform: rotate(0deg);
+            }
+        }
+
+        .inside-circle {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #0f2027;
+            line-height: 20px;
+            text-align: center;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #00f5ff;
+        }
+
+        /* ========================= */
+        /* RESPONSIVE DESIGN */
+        /* ========================= */
+
+        @media (max-width: 1024px) {
+
+            .dashboard {
+                flex-direction: column;
+            }
+
+            .calendar {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .lower {
+                flex-direction: column;
+            }
+
+            .cards {
+                flex-direction: column;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .sidebar {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px;
+            }
+
+            .menu {
+                display: flex;
+                gap: 10px;
+                overflow-x: auto;
+            }
+
+            .menu li {
+                white-space: nowrap;
+                font-size: 14px;
+            }
+
+            .profile {
+                display: none;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .calendar {
+                padding: 15px;
+            }
+
+            .circle {
+                width: 100px;
+                height: 100px;
+            }
+
+            .inside-circle {
+                width: 70px;
+                height: 70px;
+                top: 15px;
+                left: 15px;
+                font-size: 14px;
+            }
+        }
+
+        /* Logo + Toggle */
+        .logo-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        #toggleBtn {
+            background: #00f5ff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 0 10px #00f5ff;
+            transition: 0.3s;
+        }
+
+        #toggleBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #00f5ff;
+        }
+
+        /* Collapsed Sidebar */
+        .dashboard.collapsed .sidebar {
+            width: 80px;
+            transition: 0.4s;
+        }
+
+        .dashboard.collapsed .sidebar h2 {
+            display: none;
+        }
+
+        .dashboard.collapsed .menu li {
+            text-align: center;
+            font-size: 12px;
+            padding: 10px 5px;
+        }
+
+        .dashboard.collapsed .profile {
+            display: none;
+        }
+
+        /* Header Right */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Notification Bell */
+        .notification {
+            position: relative;
+            cursor: pointer;
+            font-size: 22px;
+            animation: ring 2s infinite;
+        }
+
+        @keyframes ring {
+            0% {
+                transform: rotate(0)
+            }
+
+            25% {
+                transform: rotate(10deg)
+            }
+
+            50% {
+                transform: rotate(-10deg)
+            }
+
+            75% {
+                transform: rotate(10deg)
+            }
+
+            100% {
+                transform: rotate(0)
+            }
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background: red;
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 50%;
+        }
+
+        /* Notification Panel */
+        .notification-panel {
+            position: absolute;
+            right: 40px;
+            top: 120px;
+            width: 250px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 0 20px #00f5ff;
+            display: none;
+            animation: slideDown 0.4s ease;
+            z-index: 100;
+        }
+
+        .notification-panel h4 {
+            margin-bottom: 10px;
+            color: #00f5ff;
+        }
+
+        .notif-item {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .notif-item:hover {
+            background: #00f5ff;
+            color: #000;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>SmartClass</h2>
+
+            <div class="logo-section">
+                <h2>SmartClass</h2>
+                <button id="toggleBtn">☰</button>
+                <button onclick="logout()">Logout</button>
+            </div>
+
+
+            <ul class="menu">
+                <li class="active" onclick="setActive(this)">Dashboard</li>
+
+                <li onclick="openAssignments()">Assignments</li>
+                <li onclick="openSettings()">Settings</li>
+            </ul>
+
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <div class="notification-panel" id="notificationPanel">
+                <h4>Notifications</h4>
+                <div class="notif-item">📢 New assignment submitted</div>
+
+            </div>
+
+            <div class="header">
+                <div>
+                    <h2 id="welcomeText">Hello, Greeshu 👋</h2>
+                    <p id="liveDateTime"></p>
+                </div>
+
+                <div class="header-right">
+                    <div class="notification">
+                        <span id="bell">🔔</span>
+                        <span class="badge">3</span>
+                    </div>
+                    <button>Add New Class</button>
+                </div>
+            </div>
+
+
+            <!-- Top Cards -->
+            <div class="cards">
+                <div class="card">
+                    <h3>Current Class</h3>
+                    <p id="currentClass">Checking...</p>
+                    <small id="nextClassroom"></small>
+                </div>
+
+                <div class="card">
+                    <h3>Next Class</h3>
+                    <p id="nextSubject">Checking...</p>
+                    <small id="currentRoom"></small>
+                </div>
+
+
+            </div>
+
+            <!-- Lower Section -->
+            <div class="lower">
+
+                <!-- Tasks -->
+                <div class="tasks" style="margin-top:30px;">
+                    <h3>Weekly Timetable</h3>
+                    <div style="overflow-x:auto;">
+                        <table>
+
+                            <tr>
+                                <th>Day</th>
+                                <th>08:15</th>
+                                <th>09:55</th>
+                                <th>10:10</th>
+                                <th>11:50</th>
+                                <th>12:40</th>
+                                <th>01:40</th>
+                                <th>02:30</th>
+                                <th>03:20</th>
+                            </tr>
+
+
+                            <tr>
+                                <td>Monday</td>
+                                <td colspan="2" align="center">OS</td>
+                                <td colspan="2" align="center">DW</td>
+                                <td>DAA</td>
+                                <td colspan="2" align="center">FSD Lab</td>
+                                <td>OS</td>
+                            </tr>
+
+                            <tr>
+                                <td>Tuesday</td>
+                                <td colspan="2" align="center">Training</td>
+                                <td colspan="2" align="center">Training</td>
+                                <td>Training</td>
+                                <td colspan="2" align="center">Training</td>
+                                <td>DAA-S</td>
+                            </tr>
+
+                            <tr>
+                                <td>Wednesday</td>
+                                <td>COA</td>
+                                <td>DAA</td>
+                                <td>DW</td>
+                                <td>P&S</td>
+                                <td>OS</td>
+                                <td colspan="2" align="center">FSD</td>
+                                <td>FSD</td>
+                            </tr>
+
+                            <tr>
+                                <td>Thursday</td>
+                                <td colspan="2" align="center">FP</td>
+                                <td colspan="2" align="center">DW</td>
+                                <td>DAA</td>
+                                <td>COA</td>
+                                <td>P&S</td>
+                                <td>-</td>
+                            </tr>
+
+                            <tr>
+                                <td>Friday</td>
+                                <td>DW</td>
+                                <td>OS</td>
+                                <td colspan="2" align="center">UHV Lab</td>
+                                <td>P&S</td>
+                                <td>DAA</td>
+                                <td>COA</td>
+                                <td>-</td>
+                            </tr>
+
+                            <tr>
+                                <td>Saturday</td>
+                                <td colspan="2" align="center">DAA Lab</td>
+                                <td>OS</td>
+                                <td colspan="2" align="center">P&S Lab</td>
+                                <td colspan="2" align="center">COA</td>
+                                <td>-</td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </div>
+
+
+
+
+
+                <!-- Stats -->
+                <div class="stats">
+                    <div class="stat-box">
+                        <h2>73</h2>
+                        <p>Total Students</p>
+                    </div>
+
+                </div>
+
+
+            </div>
+            <div class="stat-box">
+                <h2 id="totalStrength">0</h2>
+                <p>Total Class Strength</p>
+            </div>
+
+        </div>
+        <div class="stat-box">
+            <h2 id="currentSubject">--</h2>
+            <p>Current Subject</p>
+        </div>
+
+        <div class="stat-box">
+            <h2 id="nextRoom">--</h2>
+            <p>Next Hour Classroom</p>
+        </div>
+
+    </div>
+
+    <div class="stat-box">
+        <h3>📘 Assignments</h3>
+        <div id="dashboardAssignments"></div>
+    </div>
+    </div>
+
+    <script>
+        sessionStorage.setItem("loggedIn", "true");
+        console.log(sessionStorage.getItem("loggedIn"));
+        if (!sessionStorage.getItem("loggedIn")) {
+            window.location.href = "login.html";
+        }
+    </script>
+    <script>
+        function setActive(element) {
+            let items = document.querySelectorAll('.menu li');
+            items.forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+
+            // Restart fade animation
+            const content = document.querySelector('.content');
+            content.style.animation = 'none';
+            content.offsetHeight;
+            content.style.animation = 'fadeIn 0.5s ease';
+        }
+    </script>
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+
+            const date = now.toLocaleDateString(undefined, options);
+            const time = now.toLocaleTimeString();
+
+            document.getElementById("liveDateTime").innerHTML = date + " | " + time;
+        }
+
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+    </script>
+    <script>
+        const toggleBtn = document.getElementById("toggleBtn");
+        const dashboard = document.querySelector(".dashboard");
+
+        toggleBtn.addEventListener("click", () => {
+            dashboard.classList.toggle("collapsed");
+        });
+    </script>
+    <script>
+        const bell = document.getElementById("bell");
+
+        const panel = document.getElementById("notificationPanel");
+
+        bell.addEventListener("click", () => {
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+            }
+        });
+
+    </script>
+    <script>
+
+        // ====== EDIT THIS WITH YOUR REAL TIMETABLE ======
+        const timetable = {
+
+
+
+            Monday: [
+                { subject: "OS Lab", room: "N-511", faculty: "Mr. B. Anil Babu", start: "08:15", end: "09:55" },
+                { subject: "DW Lab", room: "N-511", faculty: "Dr. Phanindra Thota", start: "10:10", end: "11:50" },
+                { subject: "DAA", room: "N-511", faculty: "Mr. O. Gandhi", start: "11:50", end: "12:40" },
+                { subject: "FSD Lab", room: "N-511", faculty: "Mr. Palavelli Vamsi Krishna", start: "01:40", end: "02:30" },
+                { subject: "OS", room: "S-511", faculty: "Mr. B. Anil Babu", start: "03:20", end: "04:00" }
+            ],
+
+            Tuesday: [
+                { subject: "Training", room: "N-511", faculty: "Mr. Tulasi Vamsi Krishna Sai", start: "08:15", end: "09:55" },
+                { subject: "Training", room: "N-511", faculty: "Mr. Tulasi Vamsi Krishna Sai", start: "10:10", end: "12:40" },
+                { subject: "Training", room: "N-305", faculty: "Mr. Tulasi Vamsi Krishna Sai", start: "01:40", end: "03:20" },
+                { subject: "DAA-S", room: "S-305", faculty: "Mr. O. Gandhi", start: "03:20", end: "04:00" }
+            ],
+
+            Wednesday: [
+                { subject: "COA", room: "N-511", faculty: "Dr.Janaki ram", start: "08:15", end: "09:05" },
+                { subject: "DAA", room: "N-511", faculty: "Mr. O. Gandhi", start: "09:05", end: "09:55" },
+                { subject: "DW", room: "N-519", faculty: "Dr. Phanindra Thota", start: "10:10", end: "11:00" },
+                { subject: "P&S", room: "N-519", faculty: "Dr. Manohar", start: "11:00", end: "11:50" },
+                { subject: "OS", room: "N-519", faculty: "Mr. B. Anil Babu", start: "11:50", end: "12:40" },
+                { subject: "FSD", room: "N-511", faculty: "Mr. Palavelli Vamsi Krishna", start: "01:40", end: "03:20" },
+                { subject: "FSD-S", room: "S-511", faculty: "Mr. Palavelli Vamsi Krishna", start: "03:20", end: "04:00" }
+            ],
+
+            Thursday: [
+                { subject: "FP Lab", room: "N-404", faculty: "Ms. N. Bhargavi", start: "08:15", end: "09:55" },
+                { subject: "DW", room: "N-511", faculty: "Dr. Phanindra Thota", start: "10:10", end: "11:50" },
+                { subject: "DAA", room: "N-511", faculty: "Mr. O. Gandhi", start: "11:50", end: "12:40" },
+                { subject: "COA", room: "N-414A", faculty: "Dr.Janaki ram", start: "01:40", end: "02:30" },
+                { subject: "P&S", room: "N-414A", faculty: "Dr. Manohar", start: "02:30", end: "03:20" }
+            ],
+
+            Friday: [
+                { subject: "DW", room: "N-314", faculty: "Dr. Phanindra Thota", start: "08:15", end: "09:05" },
+                { subject: "OS", room: "N-314", faculty: "Mr. B. Anil Babu", start: "09:05", end: "09:55" },
+                { subject: "UHV Lab", room: "N-511", faculty: "Dr. M. Abou Raihan Rinku", start: "10:10", end: "11:50" },
+                { subject: "P&S", room: "N-511", faculty: "Dr. Manohar", start: "11:50", end: "12:40" },
+                { subject: "DAA", room: "N-414B", faculty: "Mr. O. Gandhi", start: "01:40", end: "02:30" },
+                { subject: "COA", room: "N-414B", faculty: "Dr.Janaki ram", start: "02:30", end: "03:20" }
+            ],
+
+            Saturday: [
+                { subject: "DAA Lab", room: "N-511", faculty: "Mr. O. Gandhi", start: "08:15", end: "09:55" },
+                { subject: "OS", room: "N-511", faculty: "Mr. B. Anil Babu", start: "10:10", end: "11:00" },
+                { subject: "P&S Lab", room: "N-511", faculty: "Dr. Manohar", start: "11:00", end: "12:40" },
+                { subject: "COA", room: "N-511", faculty: "Dr.Janaki ram", start: "01:40", end: "03:20" }
+            ]
+        };
+
+
+        function updateClassInfo() {
+
+            const now = new Date();
+            const day = now.toLocaleString("en-US", { weekday: "long" });
+            const currentHour = now.getHours();
+            const currentMinutes = now.getMinutes();
+            const currentTime = currentHour + ":" + currentMinutes.toString().padStart(2, '0');
+
+            const todaySchedule = timetable[day];
+
+            if (!todaySchedule) {
+                document.getElementById("currentSubject").innerText = "No Class";
+                document.getElementById("nextRoom").innerText = "--";
+                return;
+            }
+
+            let currentSubject = "Free";
+            let nextRoom = "--";
+
+            for (let i = 0; i < todaySchedule.length; i++) {
+
+                if (currentTime >= todaySchedule[i].start && currentTime < todaySchedule[i].end) {
+
+                    currentSubject = todaySchedule[i].subject;
+
+                    if (todaySchedule[i + 1]) {
+                        nextRoom = todaySchedule[i + 1].room;
+                    }
+                }
+            }
+
+            document.getElementById("currentSubject").innerText = currentSubject;
+            document.getElementById("nextRoom").innerText = nextRoom;
+        }
+
+        setInterval(updateClassInfo, 60000);
+        updateClassInfo();
+
+    </script>
+    <script>
+        const totalStudents = 73;
+        let count = 0;
+
+        const counter = setInterval(() => {
+            if (count < totalStudents) {
+                count++;
+                document.getElementById("totalStrength").innerText = count;
+            } else {
+                clearInterval(counter);
+            }
+        }, 30);
+    </script>
+    <script>
+
+        function getCurrentTime() {
+            const now = new Date();
+            return now.toTimeString().slice(0, 5);
+        }
+
+
+        function checkCurrentClass() {
+
+            const now = new Date();
+            const day = now.toLocaleString('en-us', { weekday: 'long' });
+            const currentTime = now.toTimeString().slice(0, 5);
+
+            const todaySchedule = timetable[day];
+
+            if (!todaySchedule) {
+                return;
+            }
+
+            let currentFound = false;
+
+            for (let i = 0; i < todaySchedule.length; i++) {
+
+                const period = todaySchedule[i];
+
+                if (currentTime >= period.start && currentTime <= period.end) {
+
+                    document.getElementById("currentClass").innerHTML =
+                        period.subject + "<br><small>" + period.faculty + "</small>";
+
+                    document.getElementById("nextClassroom").innerText =
+                        "Room: " + period.room;
+
+                    // NEXT
+                    if (i + 1 < todaySchedule.length) {
+                        const next = todaySchedule[i + 1];
+
+                        document.getElementById("nextSubject").innerHTML =
+                            next.subject + "<br><small>" + next.faculty + "</small>";
+
+                        document.getElementById("nextRoom").innerText =
+                            "Room: " + next.room;
+                    }
+
+                    currentFound = true;
+                    break;
+                }
+            }
+
+            if (!currentFound) {
+                document.getElementById("currentClass").innerText = "Break";
+                document.getElementById("nextSubject").innerText = "";
+            }
+        }
+
+        setInterval(checkCurrentClass, 60000);
+        checkCurrentClass();
+
+    </script>
+
+    </script>
+
+    </script>
+    <script>
+        function openSettings() {
+            window.location.href = "settings.html";
+        }
+    </script>
+    <script>
+        function logout() {
+            sessionStorage.removeItem("loggedIn");
+            window.location.href = "login.html";
+        }
+
+    </script>
+
+    <script>
+        window.onload = () => {
+
+            const username = localStorage.getItem("username");
+            const className = localStorage.getItem("className");
+            const dark = localStorage.getItem("darkTheme");
+
+            if (username) {
+                document.getElementById("welcomeText").innerText =
+                    "Hello, " + username + " 👋";
+            }
+
+            if (className) {
+                document.getElementById("currentClass").innerText = className;
+            }
+
+            if (dark === "true") {
+                document.body.style.background =
+                    "radial-gradient(circle at top left,#000,#022c2a,#0f766e)";
+            }
+
+        };
+    </script>
+    <script>
+        function openAssignments() {
+            window.location.href = "assignments.html";
+        }
+    </script>
+    <script>
+
+
+        loadAssignments();
+    </script>
+    <script>
+        function checkAssignmentNotifications() {
+
+            const data = JSON.parse(localStorage.getItem("assignments")) || [];
+            const now = new Date();
+            let alerts = [];
+
+            data.forEach(a => {
+                const deadline = new Date(a.deadline);
+                const diffDays = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
+
+                if (diffDays === 0) {
+                    alerts.push("📢 Today: " + a.title);
+                }
+                if (diffDays === 1) {
+                    alerts.push("⏰ Tomorrow: " + a.title);
+                }
+            });
+
+            const badge = document.querySelector(".badge");
+            const panel = document.getElementById("notificationPanel");
+
+            badge.innerText = alerts.length;
+            panel.innerHTML = "<h4>Notifications</h4>";
+
+            alerts.forEach(msg => {
+                panel.innerHTML += `<div class="notif-item">${msg}</div>`;
+            });
+
+            if (alerts.length === 0) {
+                badge.style.display = "none";
+            }
+        }
+
+        checkAssignmentNotifications();
+        setInterval(checkAssignmentNotifications, 60000);
+    </script>
+    <script>
+
+        function loadDashboardAssignments() {
+
+            const assignments = JSON.parse(localStorage.getItem("assignments")) || [];
+
+            const container = document.getElementById("dashboardAssignments");
+
+            if (!container) return;
+
+            container.innerHTML = "";
+
+            if (assignments.length === 0) {
+                container.innerHTML = "No assignments";
+                return;
+            }
+
+            assignments.forEach(a => {
+
+                const item = document.createElement("div");
+                item.className = "task";
+
+                item.innerHTML = `
+            <span>${a.title} (${a.subject})</span>
+            <span>${a.deadline}</span>
+        `;
+
+                container.appendChild(item);
+            });
+        }
+
+        window.addEventListener("load", loadDashboardAssignments);
+
+    </script>
+    <script>
+
+        function openAssignments() {
+            window.location.href = "assignments.html";
+        }
+
+        function openSettings() {
+            window.location.href = "settings.html";
+        }
+
+        function logout() {
+            sessionStorage.removeItem("loggedIn");
+            window.location.href = "login.html";
+        }
+
+    </script>
+    <script>
+
+        function loadDashboardAssignments() {
+
+            const container = document.getElementById("dashboardAssignments");
+            const assignments =
+                JSON.parse(localStorage.getItem("assignments")) || [];
+
+            container.innerHTML = "";
+
+            if (assignments.length === 0) {
+                container.innerHTML = "No assignments yet";
+                return;
+            }
+
+            assignments.slice(-3).reverse().forEach(a => {
+                container.innerHTML += `
+            <div class="task">
+                <span>${a.title}</span>
+                <small>${a.deadline}</small>
+            </div>
+        `;
+            });
+        }
+
+        loadDashboardAssignments();
+        function loadDashboardAssignments() {
+
+            const list = document.getElementById("dashboardAssignments");
+            const assignments = JSON.parse(localStorage.getItem("assignments")) || [];
+
+            if (assignments.length === 0) {
+                list.innerHTML = "<p>No assignments added</p>";
+                return;
+            }
+
+            list.innerHTML = "";
+
+            assignments.slice(-3).reverse().forEach(a => {
+                list.innerHTML += `
+            <div class="assignment">
+                <b>${a.title}</b><br>
+                <small>${a.subject} | ${a.deadline}</small>
+            </div>
+        `;
+            });
+        }
+
+        loadDashboardAssignments();
+        function openAssignments() {
+            window.location.href = "assignments.html";
+        }
+
+        function openSettings() {
+            window.location.href = "settings.html";
+        }
+
+        function logout() {
+            sessionStorage.removeItem("loggedIn");
+            window.location.href = "login.html";
+        }
+    </script>
+    <script>
+
+        function checkAssignmentDeadlines() {
+
+            const assignments =
+                JSON.parse(localStorage.getItem("assignments")) || [];
+
+            const panel = document.getElementById("notificationPanel");
+            const badge = document.querySelector(".badge");
+
+            let notifications = [];
+            const today = new Date();
+
+            assignments.forEach(a => {
+
+                const deadlineDate = new Date(a.deadline);
+
+                const diffTime = deadlineDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                // 🔴 OVERDUE
+                if (diffDays < 0) {
+                    notifications.push(
+                        `❌ ${a.title} is OVERDUE`
+                    );
+                }
+
+                // 🟠 DUE TODAY
+                else if (diffDays === 0) {
+                    notifications.push(
+                        `⚠️ ${a.title} due TODAY`
+                    );
+                }
+
+                // 🟢 UPCOMING
+                else if (diffDays <= 2) {
+                    notifications.push(
+                        `📘 ${a.title} due in ${diffDays} day(s)`
+                    );
+                }
+
+            });
+
+            // Clear panel
+            panel.innerHTML = "<h4>Notifications</h4>";
+
+            if (notifications.length === 0) {
+                panel.innerHTML +=
+                    `<div class="notif-item">✅ No deadlines soon</div>`;
+                badge.innerText = "0";
+                return;
+            }
+
+            notifications.forEach(n => {
+                panel.innerHTML +=
+                    `<div class="notif-item">${n}</div>`;
+            });
+
+            badge.innerText = notifications.length;
+        }
+
+        checkAssignmentDeadlines();
+        setInterval(checkAssignmentDeadlines, 60000);
+    </script>
+</body>
+
+</html>
